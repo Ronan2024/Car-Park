@@ -1,0 +1,50 @@
+from PIL import Image
+
+import pytesseract
+
+import cv2
+
+import os, sys, inspect #For dynamic filepaths
+
+import numpy as np;
+
+cam = cv2.VideoCapture(0)
+
+while True:
+
+    check, frame = cam.read()
+
+
+    img = cv2.resize(frame,(320,240))
+
+
+    img_empty = np.zeros((img.shape[0], img.shape[1]))
+
+    img2 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    img3 = cv2.threshold(img2, 70, 255, cv2.THRESH_BINARY)[1]
+
+    img4 = cv2.GaussianBlur(img3, (3, 3), 1)
+
+    text = pytesseract.image_to_string(img4)
+
+
+    # Output
+
+    cv2.imshow("Blurred", img4)
+
+    if text:    
+
+     print(text)
+
+   
+
+    key = cv2.waitKey(1)
+
+    if key == 27: # exit on ESC
+
+        break
+
+cam.release()
+
+cv2.destroyAllWindows()
